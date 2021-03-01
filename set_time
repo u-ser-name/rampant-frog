@@ -1,0 +1,12 @@
+Sets time when a specific column cell gets filled
+
+function onEdit(e) {
+
+var row = e.range.getRow();
+var col = e.range.getColumn();
+
+if(col === 15 && row > 1 && e.source.getActiveSheet().getName()==="Main"){
+e.source.getActiveSheet().getRange(row, 12).setValue(new Date());
+}
+
+}
