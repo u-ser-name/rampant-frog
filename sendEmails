@@ -1,0 +1,386 @@
+function sendEmails() {
+
+SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Main").activate();
+
+var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+var lr = ss.getLastRow();
+
+var bs = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Regions").activate();
+var rColumn = bs.getLastColumn();
+
+// Fetches templates for email
+var Acceptable = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Templates").getRange(1,1).getValue();
+var Block = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Templates").getRange(2,1).getValue();
+var lessThan = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Templates").getRange(3,1).getValue();
+var Video = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Templates").getRange(5,1).getValue();
+
+  var user1CC = "user6@email.com" + ','+ "user1@email.com";
+  var user2CC = "user6@email.com" + ','+ "user2@email.com";
+  var user3CC = "user6@email.com" + ','+ "user3@email.com";
+  var user4CC = "user6@email.com" + ','+ "user4@email.com"; 
+  var user5CC = "user6@email.com" + ',' + "user5@email.com";
+
+// loops through "Main" spreadsheet to check if email has been sent and pull necessary data to construct email
+for (var i = 2;i<=lr;i++){
+
+  var cBox = ss.getRange(i,13).getValue(); 
+  var region = ss.getRange(i, 5).getValue();
+  var type = ss.getRange(i,6).getValue();
+  var decision = ss.getRange(i,15).getValue();
+
+// loops through "Regions" tab in spreadsheet to get specific regions by person(column) 
+// There is no user 5 since anything not in if statement would automatically be sent to user5
+for (var j = 1;j<=rColumn;j++){
+  var user1 = bs.getRange(j,1,50).getValues();
+  var user2 = bs.getRange(j,2,50).getValues();
+  var user3 = bs.getRange(j,3,50).getValues();
+  var user4 = bs.getRange(j,4,50).getValues();
+
+  if(cBox == false){
+
+    if(user1.some(arr => arr.includes(region)) && (decision == "Acceptable" || decision == "HQ") && (type == "Channel" || type == "Playlist")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Acceptable.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  var subjectLine = "Subject";
+     Logger.log(messageBody);
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user1CC});
+   break;
+}
+
+    if(user1.some(arr => arr.includes(region)) && type == "Video" && (decision == "Acceptable" || decision == "HQ")){
+
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());     
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Video.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user1CC});
+   break;
+}
+
+    if(user1.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Block")){
+
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();    
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var comments = ss.getRange(i, 16).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Block.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name).replace("{Comments}",comments);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user1CC});
+  break;
+
+}
+
+    if(user1.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Less Than")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();    
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = lessThan.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Channel}",channel).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user1CC});
+  break; 
+
+}
+
+    if(user2.some(arr => arr.includes(region)) && (decision == "Acceptable" || decision == "HQ") && (type == "Channel" || type == "Playlist")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();    
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Acceptable.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user2CC});
+  break; 
+
+}
+
+    if(user2.some(arr => arr.includes(region)) && type == "Video" && (decision == "Acceptable" || decision == "HQ")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Video.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user2CC});
+  break;
+
+}
+
+    if(user2.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Block")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var comments = ss.getRange(i, 16).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Block.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Comments}", comments).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user2CC});
+  break;
+
+}
+
+    if(user2.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Less Than")){
+
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());    
+  var currentEmail = ss.getRange(i,2).getValue();    
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = lessThan.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Channel}",channel).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user2CC});
+  break;
+
+}
+
+    if(user3.some(arr => arr.includes(region))  && (decision == "Acceptable" || decision == "HQ") && (type == "Channel" || type == "Playlist")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Acceptable.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user3CC});
+  break;
+
+}
+
+    if(user3.some(arr => arr.includes(region)) && type == "Video" && (decision == "Acceptable" || decision == "HQ")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Video.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user3CC});
+  break;
+
+}
+
+if(user3.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Block")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var comments = ss.getRange(i, 16).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Block.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user3CC});
+  break;
+
+}
+
+ if(user3.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Less Than")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();    
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = lessThan.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Channel}",channel).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user3CC});
+  break;
+
+}
+
+    if(user4.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Block")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var comments = ss.getRange(i, 16).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Block.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Comments}", comments).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user4CC});
+  break;
+
+}
+
+
+    if(user4.some(arr => arr.includes(region)) && (decision == "Acceptable" || decision == "HQ") && (type == "Channel" || type == "Playlist")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Acceptable.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user4CC});
+  break;
+
+}
+
+    if(user4.some(arr => arr.includes(region)) && type == "Video" && (decision == "Acceptable" || decision == "HQ")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Video.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user4CC});
+  break;
+
+}
+
+ if(user4.some(arr => arr.includes(region)) && (type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Less Than")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();     
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = lessThan.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Channel}",channel).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user4CC});
+  break;
+}
+
+
+else if((type == "Channel" || type == "Video" || type == "Playlist") && (decision == "Block")){
+ 
+ var check = ss.getRange(i,13).setValue("Yes");
+ var time = ss.getRange(i,14).setValue(new Date());
+
+ var currentEmail = ss.getRange(i,2).getValue();
+ var channel = ss.getRange(i,3).getValue();
+ var comments = ss.getRange(i, 16).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Block.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Comments}",comments).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user5CC});
+  break;
+} 
+
+else if((decision == "Less Than") && (type == "Channel" || type == "Playlist")){
+
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+
+  var currentEmail = ss.getRange(i,2).getValue();    
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = lessThan.replace("{Channel}",channel).replace("{Decision}",decision).replace("{Channel}",channel).replace("{URL}",url).replace("{Name}", name);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user5CC});
+    Logger.log(messageBody);
+   break;
+} 
+
+else if((type == "Video") && (decision == "Acceptable" || decision == "HQ")){
+  
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue();
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Video.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+  MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user5CC});
+ break;
+} 
+
+else if((decision == "Acceptable" || decision == "HQ") && (type == "Channel"||type == "Playlist")){
+  var check = ss.getRange(i,13).setValue("Yes");
+  var time = ss.getRange(i,14).setValue(new Date());
+  var currentEmail = ss.getRange(i,2).getValue(); 
+  var channel = ss.getRange(i,3).getValue();
+  var decision = ss.getRange(i,15).getValue();
+  var url = ss.getRange(i, 9).getValue();
+  var name = ss.getRange(i,19).getValue();
+  var messageBody = Acceptable.replace("{Channel}",channel).replace("{Decision}",decision).replace("{URL}",url).replace("{Name}", name);
+  Logger.log(messageBody);
+  var subjectLine = "Subject";
+   MailApp.sendEmail(currentEmail, subjectLine, messageBody, {cc:user5CC});
+   break;
+} 
+
+} //ends cBox statement
+} // ends 'for' loops that iterates cBox and 'if' statements
+}
+}
+    
